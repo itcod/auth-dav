@@ -7,7 +7,7 @@ Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links
 Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links)
 Support CRYPT(3) MD5 SHA-1 secure hash.
 Test computation in Lua (5.1)
-Author by Yura Vdovytchenko (http://max.itcod.com)
+Author by Yura Vdovytchenko
 License MIT
 
 ОПИСАНИЕ
@@ -17,11 +17,10 @@ License MIT
 Поддерживает три базовых метода кодирования CRYPT(3) MD5 SHA1
 
 ЗАМЕЧАНИЯ
-На текущий момент WEBDAV-клиенты (BitKenix/FAR-NetDrive) обеспечивают только авторизацию при первичном входе и не умеют выдавать запрос 
-авторизации при переходе в подпапку с иным авторизуемым пользователем.
+На текущий момент WEBDAV-клиенты (BitKenix/FAR-NetDrive) обеспечивают только авторизацию при первичном входе, и не умеют выдавать запрос авторизации при переходе в подпапку с иным авторизуемым пользователем. Браузеры умеют.
 
 REQUIRE
-require "base64"
+require "base64" -- base64.lua https://github.com/toastdriven/lua-base64
 local utf8 = require "utf8" -- utf8.lua Kyle Smith https://gist.github.com/markandgo/5776124
 local csv = require("csv") -- lua-csv https://github.com/geoffleyland/lua-csv
 local resty_sha1 = require "resty.sha1" -- https://github.com/openresty/lua-resty-core
