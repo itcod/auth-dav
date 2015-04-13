@@ -11,15 +11,18 @@ Author by Yura Vdovytchenko
 License MIT
 
 ОПИСАНИЕ
+
 Модуль аутентификации для nginx. Nginx с поддержкой lua 5.1. 
 Основная задача модуля обеспечить независимую парольную защиту для каждой папки на сайте (WEBDAV-хранилище/облака).
 Реализовано методом автоматической Base-авторизации при обнаружении в папке/url файла авторизации (например: .htpasswd).
 Поддерживает три базовых метода кодирования CRYPT(3) MD5 SHA1
 
 ЗАМЕЧАНИЯ
+
 На текущий момент WEBDAV-клиенты (BitKenix/FAR-NetDrive) обеспечивают только авторизацию при первичном входе, и не умеют выдавать запрос авторизации при переходе в подпапку с иным авторизуемым пользователем. Браузеры умеют.
 
 REQUIRE
+
 require "base64" -- base64.lua https://github.com/toastdriven/lua-base64
 local utf8 = require "utf8" -- utf8.lua Kyle Smith https://gist.github.com/markandgo/5776124
 local csv = require("csv") -- lua-csv https://github.com/geoffleyland/lua-csv
@@ -29,11 +32,11 @@ local apr = require "apr.core" -- lua-apr
 descrypt = assert(package.loadlib("/usr/local/lib/lua/5.1/crypt.so", "luaopen_crypt"))
 
 STARTUP
+
 --path lua file: /etc/nginx/lua/auth-dav.lua
 --Example Nginx virtual example.conf
-local example = {
-  _NGINX = [[
-    server {
+
+server {
     ...
     set $dir /opt/home;
     set $dir_path $dir;
@@ -60,5 +63,4 @@ local example = {
     location ~/\.ht {
 	deny all;
     }
-  ]]
 }
