@@ -1,14 +1,20 @@
 # auth-dav
-Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Support CRYPT(3) MD5 SHA-1 secure hash. Test computation in Lua (5.1)
+Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Support CRYPT(3) MD5 SHA-1 secure hash. Computation in Lua (5.1)
 
 -- Copyright (c) 2015 by Yura Vdovytchenko
+
 "https://ihome.itcod.com/max/projects/auth-dav/",
 
 Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links)
+
 Support CRYPT(3) MD5 SHA-1 secure hash.
+
 Сomputation in Lua (5.1)
+
 Author by Yura Vdovytchenko
+
 License MIT
+
 Текущая версия 15.04.18 (версия по дате публикации)
 
 ОПИСАНИЕ
@@ -26,6 +32,7 @@ set $user_permit .uhtpermit; #user:GET,PUT,....OPTIONS - файл разрешё
 set $user_permit_default GET,PROPFIND,OPTIONS; # Allow -- права/методы для пользователей не имеющих персональных прав
 
 ПРИНЦИПЫ
+
 1. Замечания, предложения и пожелания обсуждаемы max@itcod.com (тема: auth-dav)
 2. Если в папке есть файл паролей $user_passwd - запрашиваем авторизацию
 3. Если в папке нет файла прав пользователей $user_permit - пользователи имеют права по умолчанию $user_permit_default
@@ -36,32 +43,44 @@ set $user_permit_default GET,PROPFIND,OPTIONS; # Allow -- права/метод�
 8. ... в разработке ...
 
 ЗАМЕЧАНИЯ
+
 На текущий момент WEBDAV-клиенты (BitKenix/FAR-NetDrive) обеспечивают только авторизацию при первичном входе, и не умеют выдавать запрос авторизации при переходе в подпапку с иным авторизуемым пользователем. Браузеры умеют.
 
 ИСТОРИЯ
+
 15.04.14 - первая версия
+
 15.04.18 - добавлено расширеное управление разрешёнными для каждого пользователя методами (GET, POST, PUT... etc)
 
 ПЛАНЫ
+
 1. Запретить WEBDAV и GET пользователям доступ к чтению файлам паролей $user_passwd и прав $user_permit
 2. ...
 
 REQUIRE
 
 require "base64" -- base64.lua https://github.com/toastdriven/lua-base64
+
 local utf8 = require "utf8" -- utf8.lua Kyle Smith https://gist.github.com/markandgo/5776124
+
 local csv = require("csv") -- lua-csv https://github.com/geoffleyland/lua-csv
+
 local resty_sha1 = require "resty.sha1" -- https://github.com/openresty/lua-resty-core
+
 local apr = require "apr.core" -- lua-apr
+
 -- Loading the library. crypt -- https://github.com/PlugwiseBV/luacrypt
+
 descrypt = assert(package.loadlib("/usr/local/lib/lua/5.1/crypt.so", "luaopen_crypt"))
 
 STARTUP
 
 --path lua file: /etc/nginx/lua/auth-dav.lua
+
 --Example Nginx virtual example.conf
 
 server {
+
     listen       80;
     server_name  dav.example.com;
     server_name_in_redirect	off;
