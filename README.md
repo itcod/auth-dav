@@ -1,5 +1,5 @@
 # auth-dav
-Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Simple automatic search file password and permit user files in directory and advanced user rights (GET PUT ... PROPFIND OPTIONS). Support CRYPT(3) MD5 SHA-1 secure hash password. Computation in Lua (5.1)
+Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Simple automatic search file password in directory and advanced user rights. Support CRYPT(3) MD5 SHA-1 secure hash password and permit user files. Computation in Lua (5.1)
 
 -- Copyright (c) 2015 by Yura Vdovytchenko
 
@@ -15,7 +15,7 @@ Author by Yura Vdovytchenko
 
 License MIT
 
-Текущая версия 15.04.19 (версия по дате публикации)
+Текущая версия 15.04.23 (версия по дате публикации)
 
 ОПИСАНИЕ
 
@@ -59,10 +59,13 @@ YY.MM.DD (год.месяц.день)
 
 15.04.19 - Запрещён простым WEBDAV и GET пользователям доступ к файлам паролей - $user_passwd, и прав - $user_permit. Разрешён администратору полный доступ к этим файлам;
 
+15.04.23 - Создание WEBDAV папок не требует наличия закрывающего строку слэша (/). Изменён конфиг nginx. Внедрена система идентификации uri (dir/file/none);
+
 ПЛАНЫ
 
-1. расширить систему прав доступа для каждого файла в отдельности;
-2. ...
+1. Реализовать создание парольных папок по умолчанию. При команде MKCOL автоматически копировать .htpasswd из текущей директории (при наличии. при отсутствии папка формируется общедоступная).
+2. расширить систему прав доступа для каждого файла в отдельности;
+3. ...
 
 ПРАВА/МЕТОДЫ ПОЛЬЗОВАТЕЛЯ В ФАЙЛЕ $user_permit 
 
@@ -117,27 +120,38 @@ STARTUP
 --Example Nginx virtual example.conf
 
 server {
-
     listen       80;
     server_name  dav.example.com;
     server_name_in_redirect	off;
     access_log /var/log/nginx/dav.example.com-access.log main;
     #resolver 10.255.255.1 [::1]:5353;
-
+    charset utf-8;
+    
     set $dir /opt/home;
-    set $dir_path $dir;
-    if ($uri ~* ^(.*)([$/].*)$) {
-	set $dir_path $dir$1;
+    set $testdir $dir$uri;
+    set $uri_type none;
+    if (-d $testdir) {
+	set $uri_type dir;
+	rewrite ^(.*)$ $1/;
+	rewrite ^(.*)/+$ $1/;
     }
-    set $home $dir_path;
-    set $sadm_passwd .htpsw;
-    set $user_passwd .uhtpasswd; #user:password[crypt(3)/md5/sha1]
-    set $user_permit .uhtpermit; #user:GET,PUT,....OPTIONS
+    if (-f $testdir) {
+	set $uri_type file;
+    }
+    if ($request_method = "MKCOL") {
+	rewrite ^(.*)$ $1/;
+	rewrite ^(.*)/+$ $1/;
+	set $uri_type dir;
+    }
+    set $sadm_passwd .uhtpsw;
+    set $user_passwd .htpasswd; #user:password[crypt(3)/md5/sha1]
+    set $user_permit .htpermit; #user:GET,PUT,....OPTIONS
     set $user_permit_default GET,PROPFIND,OPTIONS; # Allow
 
+    merge_slashes on;
     
     location / {
-	access_by_lua_file /etc/nginx/lua/auth-dav1.lua;
+	access_by_lua_file /etc/nginx/lua/auth-dav.lua;
 	dav_methods PUT DELETE MKCOL COPY MOVE;
 	dav_ext_methods PROPFIND OPTIONS;
 	create_full_put_path on;
@@ -148,7 +162,7 @@ server {
         root $dir;
         
     }
-    location ~/\.ht {
+    location ~/\.uht {
 	deny all;
     }
 }
