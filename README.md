@@ -120,11 +120,17 @@ STARTUP
 --Example Nginx virtual example.conf
 
 server {
+
     listen       80;
+    
     server_name  dav.example.com;
+    
     server_name_in_redirect	off;
+    
     access_log /var/log/nginx/dav.example.com-access.log main;
+    
     #resolver 10.255.255.1 [::1]:5353;
+    
     charset utf-8;
     
     set $dir /opt/home;
