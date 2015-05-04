@@ -1,5 +1,5 @@
 # auth-dav
-Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Simple automatic search file password in directory and advanced user rights. Support CRYPT(3) MD5 SHA-1 secure hash password and permit user files. Computation in Lua (5.1)
+SOA ITCOD. Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links). Simple automatic search file password in directory and advanced user rights. Support CRYPT(3) MD5 SHA-1 secure hash password and permit user files. Computation in Lua (5.1)
 
 -- Copyright (c) 2015 by Yura Vdovytchenko
 
