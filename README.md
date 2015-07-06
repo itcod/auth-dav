@@ -5,7 +5,7 @@ Copyright (c) 2015 by Yura Vdovytchenko (max@itcod.com)
 
 Copyright (c)itcod 2010-2015
 
-"https://ihome.itcod.com/max/projects/auth-dav/",
+"http://ihome.itcod.com/max/projects/itcod-disk/auth-dav/",
 
 Nginx Base Authenticate url/.htpasswd for WebDAV and HTTP secure directory(links)
 
